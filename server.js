@@ -113,7 +113,7 @@ app.put('/image', (req, res) => {
 
 
 
-app.listen(3000, () => {
-    console.log('app is working');
+app.listen(process.env.PORT, () => {
+    console.log(`app is working ON ${PORT}`);
 })
 
