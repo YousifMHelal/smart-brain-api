@@ -6,11 +6,11 @@ const bcrypt = require('bcrypt-nodejs');
 const db = knex({
     client: 'pg',
     connection: {
-        host: '127.0.0.1',
+        host: 'dpg-cgjia8u4dadak461gbug-a.oregon-postgres.render.com',
         port: 5432,
-        user: 'postgres',
-        password: '0100',
-        database: 'smart-brain'
+        user: 'smartbraindb_tyjw_user',
+        password: 'fjHi3JQSzGucGVyPlKB5Po7rHQYUSlsv',
+        database: 'smartbraindb_tyjw'
     }
 });
 
