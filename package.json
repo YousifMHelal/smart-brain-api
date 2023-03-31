@@ -1,10 +1,10 @@
 {
-  "name": "smart-brain-api",
+  "name": "node",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "script.js",
   "scripts": {
-    "build": "node server.js"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
