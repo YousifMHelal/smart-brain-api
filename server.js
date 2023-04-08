@@ -6,8 +6,6 @@ const bcrypt = require('bcrypt-nodejs');
 const db = knex({
     client: 'pg',
     connection: {
-        connectionString: 'postgres://smartbraindb_tyjw_user:fjHi3JQSzGucGVyPlKB5Po7rHQYUSlsv@dpg-cgjia8u4dadak461gbug-a/smartbraindb_tyjw',
-        ssl: { rejeectUnauthorized: false },
         host: 'dpg-cgjia8u4dadak461gbug-a',
         port: 5432,
         user: 'smartbraindb_tyjw_user',
@@ -27,8 +25,31 @@ app.get('/', (req, res) => {
 
 //post user sign in
 app.post('/signin', (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json('incorrect form submission');
+    }
+    db.select('email', 'hash').from('login')
+        .where('email', '=', email)
+        .then(data => {
+            const isValid = bcrypt.compareSync(password, data[0].hash);
+            if (isValid) {
+                return db.select('*').from('users')
+                    .where('email', '=', email)
+                    .then(user => {
+                        res.json(user[0])
+                    })
+                    .catch(err => res.status(400).json('unable to get user'))
+            } else {
+                res.status(400).json('wrong credentials')
+            }
+        })
+        .catch(err => res.status(400).json('wrong credentials'))
+})
+
+//register user
+app.post('/register', (req, res) => {
     const { email, name, password } = req.body;
-    
     if (!email || !name || !password) {
         return res.status(400).json('incorrect form submission');
     }
@@ -58,6 +79,19 @@ app.post('/signin', (req, res) => {
         .catch(err => res.status(400).json('unable to register'))
 })
 
+app.get("/profile/:id", (req, res) => {
+    const { id } = req.params;
+    db.select('*').from('users').where({ id })
+        .then(user => {
+            if (user.length) {
+                res.json(user[0])
+            } else {
+                res.status(400).json('Not found')
+            }
+        })
+        .catch(err => res.status(400).json('error getting user'))
+})
+
 //update entries count
 app.put('/image', (req, res) => {
     const { id } = req.body;
@@ -75,4 +109,3 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`app is working ON ${port}`);
 })
-
